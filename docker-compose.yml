@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: blumetara_mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=blumetara_db
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: blumetara_backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/blumetara_db
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-mock_key}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-mock_secret}
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - S3_BUCKET_NAME=${S3_BUCKET_NAME:-blumetara-reports}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-mock_gemini_key}
+      - FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID:-mock-firebase-project}
+    volumes:
+      - ./backend:/app
+
+volumes:
+  mongodb_data:
