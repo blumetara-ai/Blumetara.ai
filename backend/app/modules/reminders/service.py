@@ -83,3 +83,5 @@ class ReminderService:
 # Commit 2: feat(water-reminder): enforce HH:MM format checks for user times
 
 # Commit 3: feat(water-reminder): implement database initialization and repository setup
+
+# Commit 4: feat(water-reminder): support fetching active records inside repository
