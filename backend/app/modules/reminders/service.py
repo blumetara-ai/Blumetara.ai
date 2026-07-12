@@ -85,3 +85,5 @@ class ReminderService:
 # Commit 3: feat(water-reminder): implement database initialization and repository setup
 
 # Commit 4: feat(water-reminder): support fetching active records inside repository
+
+# Commit 5: feat(water-reminder): design service creation and validation wrapper
