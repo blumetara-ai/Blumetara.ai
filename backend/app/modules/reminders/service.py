@@ -89,3 +89,5 @@ class ReminderService:
 # Commit 5: feat(water-reminder): design service creation and validation wrapper
 
 # Commit 6: test(water-reminder): write schemas validations unit tests
+
+# Commit 1: feat(medicine-reminder): declare validation schemas for medicine schedules
