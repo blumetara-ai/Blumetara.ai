@@ -77,27 +77,3 @@ class ReminderService:
             # Verify ownership
             await self.get_reminder(reminder_id, user_id)
         return await self.repository.get_user_logs(user_id, reminder_id)
-
-# Commit 1: feat(water-reminder): define validation schemas for water intake schedules
-
-# Commit 2: feat(water-reminder): enforce HH:MM format checks for user times
-
-# Commit 3: feat(water-reminder): implement database initialization and repository setup
-
-# Commit 4: feat(water-reminder): support fetching active records inside repository
-
-# Commit 5: feat(water-reminder): design service creation and validation wrapper
-
-# Commit 6: test(water-reminder): write schemas validations unit tests
-
-# Commit 1: feat(medicine-reminder): declare validation schemas for medicine schedules
-
-# Commit 2: feat(medicine-reminder): require non-empty medicine name and dosage strings
-
-# Commit 3: feat(medicine-reminder): define database repository inserts queries handlers
-
-# Commit 4: feat(medicine-reminder): execute scheduler scans using APScheduler wrapper
-
-# Commit 5: feat(medicine-reminder): design custom medication alert notification template
-
-# Commit 6: test(medicine-reminder): write medication config creation unit tests

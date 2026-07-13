@@ -1,12 +1,12 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 from typing import List, Optional
 from enum import Enum
 from datetime import datetime
 import re
 
 class ReminderType(str, Enum):
-    WATER = "WATER"
     MEDICINE = "MEDICINE"
+    WATER = "WATER"
 
 class ReminderAction(str, Enum):
     TAKEN = "TAKEN"
@@ -16,40 +16,40 @@ class ReminderAction(str, Enum):
 
 class ReminderCreate(BaseModel):
     type: ReminderType
-    medicine_name: Optional[str] = Field(None, description="Name of medication")
-    dose: Optional[str] = Field(None, description="Dosage details")
+    medicine_name: Optional[str] = None
+    dose: Optional[str] = None
     times: List[str] = Field(..., description="List of times in 24-hour HH:MM format")
     timezone: str = Field(default="Asia/Kolkata", description="Timezone of the user")
     is_active: bool = True
 
-    @field_validator("medicine_name")
+    @field_validator("timezone")
     @classmethod
-    def validate_medicine_name(cls, v: Optional[str], info) -> Optional[str]:
-        if info.data.get("type") == ReminderType.MEDICINE:
-            if not v or not v.strip():
-                raise ValueError("medicine_name cannot be empty or blank")
+    def validate_timezone(cls, v: str) -> str:
+        from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+        try:
+            ZoneInfo(v)
+        except ZoneInfoNotFoundError:
+            raise ValueError(f"Invalid timezone: '{v}'. Must be a valid IANA timezone name.")
         return v
 
     @field_validator("times")
     @classmethod
     def validate_times(cls, v: List[str]) -> List[str]:
         if not v:
-            raise ValueError("Reminder times list cannot be empty")
+            raise ValueError("times list cannot be empty")
         time_regex = re.compile(r"^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$")
         for time_str in v:
             if not time_regex.match(time_str):
                 raise ValueError(f"Time '{time_str}' must be in 24-hour HH:MM format")
+        # Deduplicate times
         return sorted(list(set(v)))
 
-    @field_validator("timezone")
-    @classmethod
-    def validate_timezone(cls, v: str) -> str:
-        from zoneinfo import ZoneInfo
-        try:
-            ZoneInfo(v)
-        except Exception:
-            raise ValueError(f"Invalid timezone name '{v}'")
-        return v
+    @model_validator(mode="after")
+    def validate_medicine(self) -> 'ReminderCreate':
+        if self.type == ReminderType.MEDICINE:
+            if not self.medicine_name or not self.medicine_name.strip():
+                raise ValueError("medicine_name is required when reminder type is MEDICINE")
+        return self
 
 class ReminderUpdate(BaseModel):
     medicine_name: Optional[str] = None
@@ -64,12 +64,13 @@ class ReminderUpdate(BaseModel):
         if v is None:
             return v
         if not v:
-            raise ValueError("Reminder times list cannot be empty")
+            raise ValueError("times list cannot be empty")
         time_regex = re.compile(r"^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$")
         for time_str in v:
             if not time_regex.match(time_str):
                 raise ValueError(f"Time '{time_str}' must be in 24-hour HH:MM format")
         return sorted(list(set(v)))
+
 
 class ReminderResponse(BaseModel):
     id: str = Field(..., alias="_id")
