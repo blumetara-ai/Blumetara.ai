@@ -99,3 +99,5 @@ class ReminderService:
 # Commit 4: feat(medicine-reminder): execute scheduler scans using APScheduler wrapper
 
 # Commit 5: feat(medicine-reminder): design custom medication alert notification template
+
+# Commit 6: test(medicine-reminder): write medication config creation unit tests
