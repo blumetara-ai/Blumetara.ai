@@ -87,3 +87,5 @@ class ReminderService:
 # Commit 4: feat(water-reminder): support fetching active records inside repository
 
 # Commit 5: feat(water-reminder): add deletion execution to database model
+
+# Commit 6: feat(water-reminder): design service creation and validation wrapper
