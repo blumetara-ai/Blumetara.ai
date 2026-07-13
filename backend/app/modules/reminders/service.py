@@ -91,3 +91,5 @@ class ReminderService:
 # Commit 6: test(water-reminder): write schemas validations unit tests
 
 # Commit 1: feat(medicine-reminder): declare validation schemas for medicine schedules
+
+# Commit 2: feat(medicine-reminder): require non-empty medicine name and dosage strings
