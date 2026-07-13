@@ -6,6 +6,7 @@ import re
 
 class ReminderType(str, Enum):
     WATER = "WATER"
+    MEDICINE = "MEDICINE"
 
 class ReminderAction(str, Enum):
     TAKEN = "TAKEN"
@@ -14,10 +15,20 @@ class ReminderAction(str, Enum):
     SKIPPED = "SKIPPED"
 
 class ReminderCreate(BaseModel):
-    type: ReminderType = ReminderType.WATER
+    type: ReminderType
+    medicine_name: Optional[str] = Field(None, description="Name of medication")
+    dose: Optional[str] = Field(None, description="Dosage details")
     times: List[str] = Field(..., description="List of times in 24-hour HH:MM format")
     timezone: str = Field(default="Asia/Kolkata", description="Timezone of the user")
     is_active: bool = True
+
+    @field_validator("medicine_name")
+    @classmethod
+    def validate_medicine_name(cls, v: Optional[str], info) -> Optional[str]:
+        if info.data.get("type") == ReminderType.MEDICINE:
+            if not v or not v.strip():
+                raise ValueError("medicine_name cannot be empty or blank")
+        return v
 
     @field_validator("times")
     @classmethod
@@ -41,6 +52,8 @@ class ReminderCreate(BaseModel):
         return v
 
 class ReminderUpdate(BaseModel):
+    medicine_name: Optional[str] = None
+    dose: Optional[str] = None
     times: Optional[List[str]] = None
     timezone: Optional[str] = None
     is_active: Optional[bool] = None
@@ -62,6 +75,8 @@ class ReminderResponse(BaseModel):
     id: str = Field(..., alias="_id")
     user_id: str
     type: ReminderType
+    medicine_name: Optional[str] = None
+    dose: Optional[str] = None
     times: List[str]
     timezone: str
     is_active: bool
@@ -83,6 +98,7 @@ class ReminderLogResponse(BaseModel):
     user_id: str
     reminder_id: str
     type: ReminderType
+    medicine_name: Optional[str] = None
     action: ReminderAction
     scheduled_time: datetime
     logged_at: datetime
