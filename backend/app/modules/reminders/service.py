@@ -91,3 +91,5 @@ class ReminderService:
 # Commit 6: feat(water-reminder): design service creation and validation wrapper
 
 # Commit 7: feat(water-reminder): configure console logging and debug services formats
+
+# Commit 8: feat(water-reminder): build background interval checks routines
