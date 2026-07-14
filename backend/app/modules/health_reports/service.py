@@ -140,3 +140,5 @@ class HealthReportService:
 # Commit 1: feat(health-reports): define validation schemas for medical document uploads
 
 # Commit 2: feat(health-reports): implement storage service pre-signed URL generation
+
+# Commit 3: feat(health-reports): build AWS Textract/Gemini OCR text extraction engine
