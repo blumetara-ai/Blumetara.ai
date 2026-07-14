@@ -144,3 +144,5 @@ class HealthReportService:
 # Commit 3: feat(health-reports): build AWS Textract/Gemini OCR text extraction engine
 
 # Commit 4: feat(health-reports): build text chunking and vector embedding generation pipelines
+
+# Commit 5: feat(health-reports): mount report ingestion REST routes to api router
