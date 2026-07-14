@@ -99,3 +99,5 @@ class ReminderService:
 # Commit 10: feat(water-reminder): mount router to general api workspace path
 
 # Commit 11: test(water-reminder): write schemas validations unit tests
+
+# Commit 12: test(water-reminder): test database mock connection configurations
