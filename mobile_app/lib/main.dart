@@ -56,9 +56,14 @@ class BlumetaraApp extends StatelessWidget {
       ),
       home: Consumer<AppState>(
         builder: (context, state, _) {
-          return state.isAuthenticated 
-              ? const NavigationContainer() 
-              : const OnboardingScreen();
+          if (!state.isAuthenticated) {
+            return const OnboardingScreen();
+          }
+          // If authenticated but profile details are not configured (default is 'User' or empty), force demographic onboarding
+          if (state.profile == null || state.profile!.name == 'User' || state.profile!.name.trim().isEmpty) {
+            return const OnboardingScreen(startAtProfileStep: true);
+          }
+          return const NavigationContainer();
         },
       ),
     );
