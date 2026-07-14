@@ -95,3 +95,5 @@ class ReminderService:
 # Commit 8: feat(water-reminder): build background interval checks routines
 
 # Commit 9: feat(water-reminder): build rest routes definitions for reminders configuration
+
+# Commit 10: feat(water-reminder): mount router to general api workspace path
