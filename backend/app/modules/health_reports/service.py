@@ -142,3 +142,5 @@ class HealthReportService:
 # Commit 2: feat(health-reports): implement storage service pre-signed URL generation
 
 # Commit 3: feat(health-reports): build AWS Textract/Gemini OCR text extraction engine
+
+# Commit 4: feat(health-reports): build text chunking and vector embedding generation pipelines
