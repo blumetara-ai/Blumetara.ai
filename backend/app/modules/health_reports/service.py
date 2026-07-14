@@ -136,3 +136,5 @@ class HealthReportService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Report could not be deleted"
             )
+
+# Commit 1: feat(health-reports): define validation schemas for medical document uploads
