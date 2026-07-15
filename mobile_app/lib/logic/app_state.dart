@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../core/constants.dart';
 import '../core/network_client.dart';
@@ -19,6 +20,8 @@ class AppState extends ChangeNotifier {
   WorkoutPlan? _workoutPlan;
   bool _isLoading = false;
 
+  final FlutterLocalNotificationsPlugin _notificationsPlugin = FlutterLocalNotificationsPlugin();
+
   // Getters
   bool get isAuthenticated => _isAuthenticated;
   String? get authToken => _authToken;
@@ -35,7 +38,47 @@ class AppState extends ChangeNotifier {
     _loadAuthSession();
   }
 
+  Future<void> _initNotifications() async {
+    try {
+      const AndroidInitializationSettings androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+      const DarwinInitializationSettings iosSettings = DarwinInitializationSettings();
+      const InitializationSettings initSettings = InitializationSettings(
+        android: androidSettings,
+        iOS: iosSettings,
+      );
+      await _notificationsPlugin.initialize(initSettings);
+    } catch (e) {
+      debugPrint("Notifications init error: $e");
+    }
+  }
+
+  Future<void> triggerImmediateNotification(String title, String body) async {
+    try {
+      const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+        'blumetara_reminders',
+        'Blumetara Reminders',
+        channelDescription: 'Daily Medication and Water alerts',
+        importance: Importance.max,
+        priority: Priority.high,
+      );
+      const DarwinNotificationDetails iosDetails = DarwinNotificationDetails();
+      const NotificationDetails details = NotificationDetails(
+        android: androidDetails,
+        iOS: iosDetails,
+      );
+      await _notificationsPlugin.show(
+        DateTime.now().millisecond,
+        title,
+        body,
+        details,
+      );
+    } catch (e) {
+      debugPrint("Trigger notification error: $e");
+    }
+  }
+
   Future<void> _loadAuthSession() async {
+    await _initNotifications();
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString("auth_token");
     if (token != null) {
@@ -201,6 +244,9 @@ class AppState extends ChangeNotifier {
       final response = await networkClient.post("/reminders", body);
       if (response.statusCode == 200) {
         await fetchReminders();
+        final title = type == "medicine" ? "Reminder Configured: $medName" : "Water Reminder Set";
+        final message = type == "medicine" ? "Scheduled alert for $medName at $time." : "Scheduled water alert at $time.";
+        await triggerImmediateNotification(title, message);
       }
     } catch (e) {
       debugPrint("Add reminder error: $e");
@@ -211,7 +257,24 @@ class AppState extends ChangeNotifier {
     try {
       final response = await networkClient.post("/reminders/$reminderId/log?status=$status", {});
       if (response.statusCode == 200) {
+        // Find reminder details before refreshing
+        Reminder? targetRem;
+        try {
+          targetRem = _reminders.firstWhere((r) => r.id == reminderId);
+        } catch (_) {
+          targetRem = null;
+        }
+
         await fetchReminders();
+
+        if (targetRem != null) {
+          final isMed = targetRem.type == "medicine";
+          final title = isMed ? "Dosage Logged successfully!" : "Water logged!";
+          final body = isMed 
+              ? "You took your ${targetRem.medicineDetails?.name} dosage. Pill count updated." 
+              : "Hydration entry recorded successfully.";
+          await triggerImmediateNotification(title, body);
+        }
       }
     } catch (e) {
       debugPrint("Log reminder error: $e");

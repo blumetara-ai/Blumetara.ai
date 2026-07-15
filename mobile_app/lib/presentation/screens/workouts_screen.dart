@@ -13,6 +13,7 @@ class WorkoutsScreen extends StatefulWidget {
 class _WorkoutsScreenState extends State<WorkoutsScreen> {
   String _fitnessGoal = 'general_fitness';
   String _difficulty = 'beginner';
+  final Set<int> _completedExercises = {};
 
   void _generate(AppState state) async {
     await state.generateWorkoutPlan(_fitnessGoal, _difficulty);
@@ -150,14 +151,38 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
                       itemCount: activePlan.exercises.length,
                       itemBuilder: (context, idx) {
                         final ex = activePlan.exercises[idx];
+                        final isCompleted = _completedExercises.contains(idx);
                         return ListTile(
                           contentPadding: EdgeInsets.zero,
                           title: Text(
                             ex["name"],
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              decoration: isCompleted ? TextDecoration.lineThrough : null,
+                              color: isCompleted ? AppConstants.textGray : AppConstants.textWhite,
+                            ),
                           ),
-                          subtitle: Text("Sets: ${ex['sets']} • Reps/Target: ${ex['reps']}"),
-                          trailing: const Icon(Icons.circle_outlined, color: AppConstants.textGray),
+                          subtitle: Text(
+                            "Sets: ${ex['sets']} • Reps/Target: ${ex['reps']}",
+                            style: TextStyle(
+                              decoration: isCompleted ? TextDecoration.lineThrough : null,
+                            ),
+                          ),
+                          trailing: IconButton(
+                            icon: Icon(
+                              isCompleted ? Icons.check_circle : Icons.circle_outlined,
+                              color: isCompleted ? AppConstants.accentMint : AppConstants.textGray,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                if (isCompleted) {
+                                  _completedExercises.remove(idx);
+                                } else {
+                                  _completedExercises.add(idx);
+                                }
+                              });
+                            },
+                          ),
                         );
                       },
                     ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import '../../core/constants.dart';
 import '../../logic/app_state.dart';
 
@@ -19,17 +20,20 @@ class _ChatScreenState extends State<ChatScreen> {
     if (text.isNotEmpty) {
       Provider.of<AppState>(context, listen: false).sendMessage(text);
       _controller.clear();
-      // Scroll to bottom
-      Future.delayed(const Duration(milliseconds: 100), () {
-        if (_scrollController.hasClients) {
-          _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeOut,
-          );
-        }
-      });
+      _scrollToBottom();
     }
+  }
+
+  void _scrollToBottom() {
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
   }
 
   @override
@@ -43,6 +47,13 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     final state = Provider.of<AppState>(context);
     final hasReportContext = state.reports.isNotEmpty;
+
+    // Trigger auto-scroll on frame draw when new messages arrive
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      }
+    });
 
     return Column(
       children: [
@@ -113,13 +124,25 @@ class _ChatScreenState extends State<ChatScreen> {
                         ? null 
                         : Border.all(color: AppConstants.accentMint.withOpacity(0.1)),
                   ),
-                  child: Text(
-                    msg.content,
-                    style: TextStyle(
-                      color: isUser ? AppConstants.primaryDark : AppConstants.textWhite,
-                      fontSize: 15,
-                    ),
-                  ),
+                  child: isUser 
+                      ? Text(
+                          msg.content,
+                          style: TextStyle(
+                            color: AppConstants.primaryDark,
+                            fontSize: 15,
+                          ),
+                        )
+                      : MarkdownBody(
+                          data: msg.content,
+                          styleSheet: MarkdownStyleSheet(
+                            p: const TextStyle(color: AppConstants.textWhite, fontSize: 15, height: 1.3),
+                            h1: TextStyle(color: AppConstants.accentMint, fontSize: 18, fontWeight: FontWeight.bold),
+                            h2: TextStyle(color: AppConstants.accentMint, fontSize: 16, fontWeight: FontWeight.bold),
+                            h3: TextStyle(color: AppConstants.accentMint, fontSize: 15, fontWeight: FontWeight.bold),
+                            strong: TextStyle(color: AppConstants.accentMint, fontWeight: FontWeight.bold),
+                            listBullet: TextStyle(color: AppConstants.accentMint),
+                          ),
+                        ),
                 ),
               );
             },
