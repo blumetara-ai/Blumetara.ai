@@ -56,9 +56,36 @@ class DashboardScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _buildDailyDial('Water', '1.8L / 3.0L', 0.6, Icons.local_drink, Colors.blue),
-                      _buildDailyDial('Steps', '6,420 / 10k', 0.64, Icons.directions_run, Colors.green),
-                      _buildDailyDial('Sleep', '7h / 8h', 0.87, Icons.nightlight_round, Colors.purple),
+                      _buildInteractiveGoalDial(
+                        context,
+                        state,
+                        'water',
+                        'Water',
+                        Icons.local_drink,
+                        Colors.blue,
+                        'L',
+                        3.0,
+                      ),
+                      _buildInteractiveGoalDial(
+                        context,
+                        state,
+                        'steps',
+                        'Steps',
+                        Icons.directions_run,
+                        Colors.green,
+                        '',
+                        10000.0,
+                      ),
+                      _buildInteractiveGoalDial(
+                        context,
+                        state,
+                        'sleep',
+                        'Sleep',
+                        Icons.nightlight_round,
+                        Colors.purple,
+                        'h',
+                        8.0,
+                      ),
                     ],
                   ),
                 ],
@@ -185,29 +212,144 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDailyDial(String title, String val, double progress, IconData icon, Color color) {
-    return Column(
-      children: [
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            SizedBox(
-              height: 70,
-              width: 70,
-              child: CircularProgressIndicator(
-                value: progress,
-                strokeWidth: 6,
-                backgroundColor: color.withOpacity(0.15),
-                valueColor: AlwaysStoppedAnimation<Color>(color),
+  Widget _buildInteractiveGoalDial(
+    BuildContext context,
+    AppState state,
+    String type,
+    String label,
+    IconData icon,
+    Color color,
+    String unit,
+    double defaultTarget,
+  ) {
+    Goal? matchingGoal;
+    try {
+      matchingGoal = state.goals.firstWhere((g) => g.goalType == type);
+    } catch (_) {
+      matchingGoal = null;
+    }
+
+    final current = matchingGoal?.currentValue ?? 0.0;
+    final target = matchingGoal?.targetValue ?? defaultTarget;
+    final progress = target > 0 ? (current / target).clamp(0.0, 1.0) : 0.0;
+
+    String displayVal;
+    if (type == 'steps') {
+      displayVal = "${current.toInt()} / ${target.toInt()}";
+    } else {
+      displayVal = "${current.toStringAsFixed(1)}$unit / ${target.toStringAsFixed(1)}$unit";
+    }
+
+    return GestureDetector(
+      onTap: () => _showLogProgressDialog(context, state, type, matchingGoal, target, unit),
+      child: Column(
+        children: [
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              SizedBox(
+                height: 70,
+                width: 70,
+                child: CircularProgressIndicator(
+                  value: progress,
+                  strokeWidth: 6,
+                  backgroundColor: color.withOpacity(0.15),
+                  valueColor: AlwaysStoppedAnimation<Color>(color),
+                ),
               ),
+              Icon(icon, size: 28, color: color),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(displayVal, style: TextStyle(fontSize: 12, color: AppConstants.textGray)),
+        ],
+      ),
+    );
+  }
+
+  void _showLogProgressDialog(
+    BuildContext context,
+    AppState state,
+    String type,
+    Goal? goal,
+    double target,
+    String unit,
+  ) {
+    final valueController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Log ${type[0].toUpperCase()}${type.substring(1)} Progress"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("Add to your current daily progress (Target: $target$unit)"),
+              const SizedBox(height: 16),
+              TextField(
+                controller: valueController,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                style: const TextStyle(color: AppConstants.textWhite),
+                decoration: InputDecoration(
+                  labelText: "Value to add",
+                  labelStyle: const TextStyle(color: AppConstants.textGray),
+                  suffixText: unit,
+                  suffixStyle: const TextStyle(color: AppConstants.accentMint),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: AppConstants.textGray.withOpacity(0.5)),
+                  ),
+                  focusedBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: AppConstants.accentMint),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel", style: TextStyle(color: AppConstants.textGray)),
             ),
-            Icon(icon, size: 28, color: color),
+            ElevatedButton(
+              onPressed: () async {
+                final double? addVal = double.tryParse(valueController.text.trim());
+                if (addVal != null && addVal > 0) {
+                  if (goal == null) {
+                    await state.addGoal(type, target, unit);
+                    await state.refreshAllData();
+                    Goal? newGoal;
+                    try {
+                      newGoal = state.goals.firstWhere((g) => g.goalType == type);
+                    } catch (_) {
+                      newGoal = null;
+                    }
+                    if (newGoal != null) {
+                      await state.logGoalProgress(newGoal.id, addVal);
+                    }
+                  } else {
+                    await state.logGoalProgress(goal.id, addVal);
+                  }
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Successfully logged progress for $type!"),
+                        backgroundColor: AppConstants.accentMint,
+                      ),
+                    );
+                  }
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppConstants.accentMint,
+                foregroundColor: AppConstants.primaryDark,
+              ),
+              child: const Text("Log"),
+            ),
           ],
-        ),
-        const SizedBox(height: 8),
-        Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-        Text(val, style: TextStyle(fontSize: 12, color: AppConstants.textGray)),
-      ],
+        );
+      },
     );
   }
 
