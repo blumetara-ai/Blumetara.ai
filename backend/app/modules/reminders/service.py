@@ -85,3 +85,5 @@ class ReminderService:
 # Commit 3: feat(medicine-reminder): define database repository inserts queries handlers
 
 # Commit 4: feat(medicine-reminder): support config updates via repository operations
+
+# Commit 5: feat(medicine-reminder): create schedule logs collections mapping details
