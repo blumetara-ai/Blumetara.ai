@@ -81,3 +81,5 @@ class ReminderService:
 # Commit 1: feat(medicine-reminder): declare validation schemas for medicine schedules
 
 # Commit 2: feat(medicine-reminder): require non-empty medicine name and dosage strings
+
+# Commit 3: feat(medicine-reminder): define database repository inserts queries handlers
