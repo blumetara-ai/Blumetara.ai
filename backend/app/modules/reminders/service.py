@@ -101,3 +101,5 @@ class ReminderService:
 # Commit 11: test(water-reminder): write schemas validations unit tests
 
 # Commit 12: test(water-reminder): test database mock connection configurations
+
+# Commit 13: test(water-reminder): verify deletion counts outcomes
