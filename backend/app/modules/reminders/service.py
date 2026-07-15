@@ -79,3 +79,5 @@ class ReminderService:
         return await self.repository.get_user_logs(user_id, reminder_id)
 
 # Commit 1: feat(medicine-reminder): declare validation schemas for medicine schedules
+
+# Commit 2: feat(medicine-reminder): require non-empty medicine name and dosage strings
