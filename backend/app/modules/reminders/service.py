@@ -103,3 +103,5 @@ class ReminderService:
 # Commit 12: test(water-reminder): test database mock connection configurations
 
 # Commit 13: test(water-reminder): verify deletion counts outcomes
+
+# Commit 14: docs(water-reminder): updates readme document file local guidelines
