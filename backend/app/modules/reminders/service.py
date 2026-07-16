@@ -95,3 +95,5 @@ class ReminderService:
 # Commit 8: feat(medicine-reminder): map rest endpoints paths for medicine configurations
 
 # Commit 9: feat(medicine-reminder): import and link endpoints inside central router
+
+# Commit 10: feat(medicine-reminder): load active cron scan loops on startup LIFESPAN
