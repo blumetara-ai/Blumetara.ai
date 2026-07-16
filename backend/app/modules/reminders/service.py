@@ -99,3 +99,5 @@ class ReminderService:
 # Commit 10: feat(medicine-reminder): load active cron scan loops on startup LIFESPAN
 
 # Commit 11: test(medicine-reminder): write medication config creation unit tests
+
+# Commit 12: test(medicine-reminder): verify missing medicine name fields triggers value error
