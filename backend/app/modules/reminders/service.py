@@ -91,3 +91,5 @@ class ReminderService:
 # Commit 6: feat(medicine-reminder): execute scheduler scans using APScheduler wrapper
 
 # Commit 7: feat(medicine-reminder): design custom medication alert notification template
+
+# Commit 8: feat(medicine-reminder): map rest endpoints paths for medicine configurations
