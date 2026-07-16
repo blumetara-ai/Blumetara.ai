@@ -89,3 +89,5 @@ class ReminderService:
 # Commit 5: feat(medicine-reminder): create schedule logs collections mapping details
 
 # Commit 6: feat(medicine-reminder): execute scheduler scans using APScheduler wrapper
+
+# Commit 7: feat(medicine-reminder): design custom medication alert notification template
