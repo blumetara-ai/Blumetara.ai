@@ -93,3 +93,5 @@ class ReminderService:
 # Commit 7: feat(medicine-reminder): design custom medication alert notification template
 
 # Commit 8: feat(medicine-reminder): map rest endpoints paths for medicine configurations
+
+# Commit 9: feat(medicine-reminder): import and link endpoints inside central router
