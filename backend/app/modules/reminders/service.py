@@ -105,3 +105,5 @@ class ReminderService:
 # Commit 13: test(medicine-reminder): test retrieval failures outcomes with wrong owner check
 
 # Commit 14: docs(medicine-reminder): updates local setups configs instructions in readme
+
+# Commit 15: style(medicine-reminder): finalize medicine reminder code format
