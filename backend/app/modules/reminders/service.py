@@ -103,3 +103,5 @@ class ReminderService:
 # Commit 12: test(medicine-reminder): verify missing medicine name fields triggers value error
 
 # Commit 13: test(medicine-reminder): test retrieval failures outcomes with wrong owner check
+
+# Commit 14: docs(medicine-reminder): updates local setups configs instructions in readme
