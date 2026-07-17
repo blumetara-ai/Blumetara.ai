@@ -101,3 +101,5 @@ class ReminderService:
 # Commit 11: test(medicine-reminder): write medication config creation unit tests
 
 # Commit 12: test(medicine-reminder): verify missing medicine name fields triggers value error
+
+# Commit 13: test(medicine-reminder): test retrieval failures outcomes with wrong owner check
