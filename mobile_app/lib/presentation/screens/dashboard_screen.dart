@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:file_picker/file_picker.dart';
 import '../../core/constants.dart';
 import '../../logic/app_state.dart';
 
@@ -166,7 +167,7 @@ class DashboardScreen extends StatelessWidget {
                   ElevatedButton.icon(
                     onPressed: state.isLoading 
                         ? null 
-                        : () => _simulateReportUpload(context, state),
+                        : () => _uploadReportFlow(context, state),
                     icon: state.isLoading 
                         ? const SizedBox(
                             width: 16, 
@@ -372,19 +373,38 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  // Simulate file upload with mock medical document contents to keep it self-contained
-  void _simulateReportUpload(BuildContext context, AppState state) async {
-    final mockPdfBytes = List<int>.generate(100, (i) => i);
-    final mockFileName = "BloodReport_June2026.pdf";
-    await state.uploadReport(mockPdfBytes, mockFileName);
-    
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("AWS Textract extraction and embedding ingestion completed! TARA now holds this report context."),
-          backgroundColor: AppConstants.accentMint,
-        ),
+  // Upload a real device file using the native file picker
+  void _uploadReportFlow(BuildContext context, AppState state) async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf'],
+        withData: true,
       );
+      if (result != null && result.files.single.bytes != null) {
+        final fileBytes = result.files.single.bytes!;
+        final fileName = result.files.single.name;
+        await state.uploadReport(fileBytes, fileName);
+        
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("AWS Textract extraction and embedding ingestion completed! TARA now holds this report context."),
+              backgroundColor: AppConstants.accentMint,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint("File picker error: $e");
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("File upload failed: $e"),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
     }
   }
 }

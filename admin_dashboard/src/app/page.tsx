@@ -36,6 +36,7 @@ export default function AdminDashboard() {
 
   // Attempt to fetch operational logs from local FastAPI instance if online
   useEffect(() => {
+    // 1. Fetch Users List
     fetch('http://localhost:8000/api/v1/admin/users', {
       headers: { 'Authorization': 'Bearer mock_admin_token' }
     })
@@ -43,15 +44,34 @@ export default function AdminDashboard() {
       .then(data => {
         if (Array.isArray(data)) {
           setUsers(data.map((u: any) => ({
-            id: u.firebaseUid,
+            id: u.firebaseUid || u._id || 'unknown',
             email: u.email,
-            roles: u.roles,
-            status: u.status,
+            roles: u.roles || ['User'],
+            status: u.status || 'active',
             createdAt: u.createdAt || 'Just Now'
           })));
         }
       })
-      .catch(() => console.log("FastAPI backend offline. Displaying default console mock parameters."));
+      .catch(() => console.log("FastAPI backend offline or users fetch failed."));
+
+    // 2. Fetch Security Audit Stream
+    fetch('http://localhost:8000/api/v1/admin/audit-logs', {
+      headers: { 'Authorization': 'Bearer mock_admin_token' }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setAudits(data.map((a: any) => ({
+            actorId: a.actorId || 'system',
+            action: a.action || 'event',
+            resourceType: a.resourceType || 'unknown',
+            resourceId: a.resourceId || 'unknown',
+            createdAt: a.createdAt ? new Date(a.createdAt).toLocaleString() : 'Just Now'
+          })));
+          setOcrStatus("Active");
+        }
+      })
+      .catch(() => console.log("FastAPI backend offline or audit logs fetch failed."));
   }, []);
 
   return (
@@ -105,16 +125,16 @@ export default function AdminDashboard() {
             <div className="value">{users.length}</div>
           </div>
           <div className="card">
-            <h3>Reports Analysed</h3>
-            <div className="value">14</div>
+            <h3>Security Audit Logs</h3>
+            <div className="value">{audits.length}</div>
           </div>
           <div className="card">
-            <h3>OCR (Textract) Pipeline</h3>
+            <h3>Active Accounts</h3>
+            <div className="value">{users.filter(u => u.status === 'active').length}</div>
+          </div>
+          <div className="card">
+            <h3>OCR Pipeline State</h3>
             <div className="value" style={{ color: '#4ead73' }}>{ocrStatus}</div>
-          </div>
-          <div className="card">
-            <h3>Tokens Consumed</h3>
-            <div className="value">42.8k</div>
           </div>
         </section>
 

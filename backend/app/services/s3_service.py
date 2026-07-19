@@ -8,7 +8,10 @@ logger = logging.getLogger(__name__)
 
 class S3Service:
     def __init__(self):
-        self.is_mock = (settings.AWS_ACCESS_KEY_ID == "mock_key" or settings.AWS_SECRET_ACCESS_KEY == "mock_secret")
+        self.is_mock = (
+            settings.AWS_ACCESS_KEY_ID in ["mock_key", "your_real_aws_access_key", "", None] or
+            settings.AWS_SECRET_ACCESS_KEY in ["mock_secret", "your_real_aws_secret_key", "", None]
+        )
         backend_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         self.local_dir = os.path.join(backend_dir, "local_s3_mock")
         

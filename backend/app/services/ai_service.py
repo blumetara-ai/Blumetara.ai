@@ -180,7 +180,7 @@ class AIService:
             )
             try:
                 model = genai.GenerativeModel(
-                    model_name="gemini-3.5-flash",
+                    model_name="gemini-1.5-flash",
                     system_instruction=system_instruction
                 )
                 prompt_content = f"Health Report Context:\n{context_str}\n\nUser Question: {query}"
@@ -195,7 +195,7 @@ class AIService:
         
         async def run_agent(agent: AsyncAgent) -> tuple[str, str]:
             prompt = agent.build_prompt(query, context_str, profile_str)
-            model = genai.GenerativeModel(model_name="gemini-3.5-flash")
+            model = genai.GenerativeModel(model_name="gemini-1.5-flash")
             response = await asyncio.to_thread(model.generate_content, prompt)
             return agent.role, response.text
 
@@ -220,7 +220,7 @@ class AIService:
         aggregator_prompt = self.aggregator.build_prompt(query, valid_reports, profile_str)
         
         try:
-            model = genai.GenerativeModel(model_name="gemini-3.5-flash")
+            model = genai.GenerativeModel(model_name="gemini-1.5-flash")
             aggregator_response = await asyncio.to_thread(model.generate_content, aggregator_prompt)
             consensus_text = aggregator_response.text
             return consensus_text + DISCLAIMER_TEXT

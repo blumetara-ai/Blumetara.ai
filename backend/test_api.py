@@ -99,6 +99,10 @@ logger = logging.getLogger("TestVerifier")
 async def run_tests():
     logger.info("=== Starting Automated Verification Pipeline ===")
     
+    # Force mock mode override for offline test runs
+    ai_service.api_key_configured = False
+    vector_search_service.api_key_configured = False
+    
     # 1. Test Mock Auth Validation
     logger.info("Test 1: Decoding mock Firebase token...")
     user_payload = await verify_firebase_token("mock_test-user-123_admin")

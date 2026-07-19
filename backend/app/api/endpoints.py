@@ -17,6 +17,7 @@ from app.services.s3_service import s3_service
 from app.services.textract_service import textract_service
 from app.services.vector_search_service import vector_search_service
 from app.services.ai_service import ai_service
+from app.utils.scheduler import calculate_next_run
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -395,7 +396,7 @@ async def create_reminder(reminder_data: ReminderCreate, current_user: dict = De
         "daysOfWeek": reminder_data.daysOfWeek or [],
         "timezone": reminder_data.timezone,
         "active": True,
-        "nextRunAt": datetime.utcnow() # In production, compute next time based on timezone/frequency
+        "nextRunAt": calculate_next_run(reminder_data.time, reminder_data.timezone)
     }
     result = await db.reminders.insert_one(reminder)
     reminder["_id"] = str(result.inserted_id)

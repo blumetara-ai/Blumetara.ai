@@ -36,7 +36,7 @@ class VectorSearchService:
         try:
             # Use Gemini embedding model
             result = genai.embed_content(
-                model="models/gemini-embedding-2",
+                model="models/text-embedding-004",
                 content=text,
                 task_type="retrieval_document"
             )
