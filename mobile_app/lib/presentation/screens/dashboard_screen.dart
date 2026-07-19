@@ -5,6 +5,8 @@ import '../../core/constants.dart';
 import '../../logic/app_state.dart';
 import '../../data/models.dart';
 
+/// Main app patient dashboard presenting interactive health goals progress dials
+/// and secure medical PDF report uploads.
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 
