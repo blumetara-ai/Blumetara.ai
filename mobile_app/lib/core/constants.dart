@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Core design system and global configuration tokens for the Blumetara app.
 class AppConstants {
   // API Config
   static const bool isProduction = bool.fromEnvironment('isProduction', defaultValue: false);
