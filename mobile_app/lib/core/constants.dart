@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 
 class AppConstants {
   // API Config
-  static const String apiBaseUrl = "http://localhost:8000/api/v1";
+  static const bool isProduction = bool.fromEnvironment('isProduction', defaultValue: false);
+  static const String apiBaseUrl = isProduction 
+      ? "https://api.blumetara.ai/api/v1" 
+      : "http://localhost:8000/api/v1";
 
   // Visual Theme Colors
   static const Color primaryDark = Color(0xFF0B0E0C);
