@@ -228,9 +228,40 @@ async def chat_with_tara(chat_data: ChatMessageCreate, current_user: dict = Depe
         })
         conversation_id = str(conv_result.inserted_id)
 
-    # 1. Fetch profile to inject user context
+    # 1. Fetch profile to inject user context and check daily chat quota
     profile = await db.profiles.find_one({"userId": current_user["uid"]})
-    
+    if not profile:
+        profile = {
+            "userId": current_user["uid"],
+            "name": "User",
+            "ageRange": "Unspecified",
+            "gender": "Unspecified",
+            "dailyChatCount": 0,
+            "lastChatDate": ""
+        }
+        await db.profiles.insert_one(profile)
+
+    # Enforce Daily Chat Quota limit (20 queries per day)
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    last_chat_date = profile.get("lastChatDate", "")
+    daily_chat_count = profile.get("dailyChatCount", 0)
+
+    if last_chat_date == today_str:
+        if daily_chat_count >= 20:
+            raise HTTPException(
+                status_code=429,
+                detail="Daily chat quota exceeded. You have reached your limit of 20 messages per day."
+            )
+        new_count = daily_chat_count + 1
+    else:
+        new_count = 1
+
+    # Update database profile with new count and date
+    await db.profiles.update_one(
+        {"userId": current_user["uid"]},
+        {"$set": {"dailyChatCount": new_count, "lastChatDate": today_str}}
+    )
+
     # 2. Get AI Response with RAG & safety filters
     response_text = await ai_service.generate_response(
         user_id=current_user["uid"],
