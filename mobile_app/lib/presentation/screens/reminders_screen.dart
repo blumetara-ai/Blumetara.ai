@@ -50,7 +50,7 @@ class RemindersScreen extends StatelessWidget {
                       const SizedBox(height: 16),
                     ],
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.between,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text("Selected Time: ${selectedTime.format(context)}"),
                         ElevatedButton(

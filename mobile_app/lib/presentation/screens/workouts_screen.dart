@@ -131,7 +131,7 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.between,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           activePlan.fitnessGoal.toUpperCase().replaceAll("_", " "),

@@ -129,7 +129,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.between,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
                         "🥗 Food Ingestion & Tracker",
@@ -195,7 +195,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       foregroundColor: AppConstants.accentMint,
                       side: BorderSide(color: AppConstants.accentMint),
                     ),
-                    child: const Text("Unlock Premium Plan — $4.99/mo"),
+                    child: const Text("Unlock Premium Plan — \$4.99/mo"),
                   )
                 ],
               ),
@@ -226,7 +226,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title: const Text('Unlock Premium Plan'),
           content: const Text(
             'This action triggers our secure Stripe/Razorpay payment gateway APIs (Subscription-Ready Architecture enabled).\n\n'
-            'Confirm payment simulation of $4.99/month?'
+            'Confirm payment simulation of \$4.99/month?'
           ),
           actions: [
             TextButton(

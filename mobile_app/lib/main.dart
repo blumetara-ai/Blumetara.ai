@@ -47,7 +47,7 @@ class BlumetaraApp extends StatelessWidget {
                 displayColor: AppConstants.textWhite,
               ),
         ),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           color: AppConstants.primaryGreenDark,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppConstants.defaultRadius),
