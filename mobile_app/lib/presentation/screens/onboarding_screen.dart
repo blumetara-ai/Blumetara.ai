@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../../core/constants.dart';
 import '../../logic/app_state.dart';
 
+/// Authentication onboarding screen supporting registration, logins,
+/// and demographic profile setup.
 class OnboardingScreen extends StatefulWidget {
   final bool startAtProfileStep;
   const OnboardingScreen({super.key, this.startAtProfileStep = false});
