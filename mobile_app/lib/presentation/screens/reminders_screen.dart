@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../core/constants.dart';
 import '../../logic/app_state.dart';
 
+/// Reminders management screen displaying active alerts and setting new alerts.
 class RemindersScreen extends StatelessWidget {
   const RemindersScreen({super.key});
 
