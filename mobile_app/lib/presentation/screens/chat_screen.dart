@@ -4,6 +4,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import '../../core/constants.dart';
 import '../../logic/app_state.dart';
 
+/// Interactive AI Copilot assistant interface connecting the user to TARA.
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
 
