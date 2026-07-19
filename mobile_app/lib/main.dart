@@ -33,26 +33,26 @@ class BlumetaraApp extends StatelessWidget {
       title: 'Blumetara AI',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        brightness: Brightness.dark,
+        brightness: Brightness.light,
         scaffoldBackgroundColor: AppConstants.primaryDark,
-        primaryColor: AppConstants.primaryGreenDark,
-        colorScheme: ColorScheme.dark(
+        primaryColor: AppConstants.accentMint,
+        colorScheme: ColorScheme.light(
           primary: AppConstants.accentMint,
           secondary: AppConstants.primaryGreenDark,
           background: AppConstants.primaryDark,
         ),
         textTheme: GoogleFonts.outfitTextTheme(
-          ThemeData.dark().textTheme.apply(
+          ThemeData.light().textTheme.apply(
                 bodyColor: AppConstants.textWhite,
                 displayColor: AppConstants.textWhite,
               ),
         ),
         cardTheme: CardTheme(
-          color: AppConstants.primaryGreenDark.withOpacity(0.2),
+          color: AppConstants.primaryGreenDark,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppConstants.defaultRadius),
             side: BorderSide(
-              color: AppConstants.accentMint.withOpacity(0.15),
+              color: AppConstants.accentMint.withOpacity(0.2),
               width: 1,
             ),
           ),
