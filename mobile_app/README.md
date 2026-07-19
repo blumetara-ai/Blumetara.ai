@@ -1,17 +1,25 @@
-# mobile_app
+# Blumetara AI - Flutter Mobile App
 
-A new Flutter project.
+This directory contains the source code for the Blumetara patient co-pilot application.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+1. Ensure the Flutter SDK is installed and added to your environment path.
+2. In this folder, restore project dependencies:
+   ```bash
+   flutter pub get
+   ```
+3. Run the development target:
+   * **Chrome Web**: `flutter run -d chrome`
+   * **macOS Desktop**: `flutter run -d macos`
+   * **Mobile Emulator**: `flutter run`
 
-A few resources to get you started if this is your first Flutter project:
+## Environment Configuration
+API endpoints can be toggled by passing compile-time variables:
+* **Development**: defaults to `http://localhost:8000/api/v1`
+* **Production**: `flutter run --dart-define=isProduction=true`
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Features
+* **Firebase Authentication Client**: Integrated with mock login overrides for swift local evaluations.
+* **Light Theme Style**: Implemented to support clean branded color palettes.
+* **Interactive Dials & Modal Progress Logger**: Logs user statistics dynamically.
