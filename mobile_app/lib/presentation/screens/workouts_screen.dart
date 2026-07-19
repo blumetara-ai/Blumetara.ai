@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../core/constants.dart';
 import '../../logic/app_state.dart';
 
+/// Workouts planner screen showing the generated training routines.
 class WorkoutsScreen extends StatefulWidget {
   const WorkoutsScreen({super.key});
 
