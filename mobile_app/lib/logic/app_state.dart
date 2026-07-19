@@ -9,6 +9,8 @@ import '../core/constants.dart';
 import '../core/network_client.dart';
 import '../data/models.dart';
 
+/// Application State Management container managing authentication status,
+/// dynamic profiles, goals progress, workouts plans, and AI Chat history.
 class AppState extends ChangeNotifier {
   bool _isAuthenticated = false;
   String? _authToken;
