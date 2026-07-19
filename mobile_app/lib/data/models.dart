@@ -1,3 +1,4 @@
+/// User demographic profile details.
 class Profile {
   final String name;
   final String ageRange;
@@ -14,6 +15,7 @@ class Profile {
   }
 }
 
+/// Dynamic health tracker goals (steps, sleep, water).
 class Goal {
   final String id;
   final String goalType;
