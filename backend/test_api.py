@@ -3,6 +3,8 @@ import logging
 from unittest.mock import patch
 from bson import ObjectId
 from datetime import datetime
+from app.config.config import settings
+settings.FIREBASE_PROJECT_ID = "mock-firebase-project"
 
 # Setup Mock Collections
 class MockCursor:

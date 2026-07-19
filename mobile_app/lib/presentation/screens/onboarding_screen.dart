@@ -45,6 +45,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       final success = await state.login(
         _emailController.text.trim(),
         _passwordController.text,
+        isSignUp: _isSignUp,
       );
       if (!mounted) return;
       if (success) {

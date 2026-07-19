@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../core/constants.dart';
 import '../core/network_client.dart';
@@ -91,30 +92,51 @@ class AppState extends ChangeNotifier {
   }
 
   // Authentication Flow
-  Future<bool> login(String email, String password) async {
+  Future<bool> login(String email, String password, {bool isSignUp = false}) async {
     _isLoading = true;
     notifyListeners();
     
-    // Simulate / Perform Firebase Auth mapping.
-    // For development, we generate a mock token: mock_[email]
-    await Future.delayed(const Duration(milliseconds: 800));
-    
-    final mockToken = "mock_${email.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '')}";
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString("auth_token", mockToken);
-    
-    _authToken = mockToken;
-    _isAuthenticated = true;
-    networkClient.updateToken(mockToken);
-    
-    await refreshAllData();
-    
-    _isLoading = false;
-    notifyListeners();
-    return true;
+    try {
+      UserCredential userCredential;
+      if (isSignUp) {
+        userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+      } else {
+        userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+      }
+      
+      final token = await userCredential.user?.getIdToken() ?? "";
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString("auth_token", token);
+      
+      _authToken = token;
+      _isAuthenticated = true;
+      networkClient.updateToken(token);
+      
+      await refreshAllData();
+      
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      debugPrint("Authentication error: $e");
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
   }
 
   Future<void> logout() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+    } catch (e) {
+      debugPrint("Firebase signOut error: $e");
+    }
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove("auth_token");
     _authToken = null;

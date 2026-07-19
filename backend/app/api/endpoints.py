@@ -359,13 +359,15 @@ async def log_goal_progress(id: str, progress_data: GoalProgressCreate, current_
     }
     await db.goal_progress.insert_one(progress)
     
-    # Update current value in primary goal document
-    await db.goals.update_one(
+    # Update current value in primary goal document by incrementing it
+    updated_goal = await db.goals.find_one_and_update(
         {"_id": ObjectId(id)},
-        {"$set": {"currentValue": progress_data.value}}
+        {"$inc": {"currentValue": progress_data.value}},
+        return_document=True
     )
+    new_value = updated_goal.get("currentValue", progress_data.value) if updated_goal else progress_data.value
     
-    return {"status": "success", "currentValue": progress_data.value}
+    return {"status": "success", "currentValue": new_value}
 
 # =====================================================================
 # MEDICATION & WATER REMINDER ENDPOINTS

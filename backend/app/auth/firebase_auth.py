@@ -1,5 +1,6 @@
 import logging
 import httpx
+from datetime import datetime
 from jose import jwt, JWTError
 from fastapi import HTTPException, Security, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -29,7 +30,7 @@ async def fetch_firebase_public_keys():
 
 async def verify_firebase_token(token: str) -> dict:
     # Check for local testing mock tokens
-    if settings.FIREBASE_PROJECT_ID == "mock-firebase-project" or token.startswith("mock_"):
+    if settings.FIREBASE_PROJECT_ID == "mock-firebase-project":
         logger.warning("Using mock token validation for development.")
         # Return mock payload
         parts = token.split("_")
@@ -102,12 +103,12 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Security(
                 "$set": {
                     "email": user["email"],
                     "roles": user["roles"],
-                    "updatedAt": "ISODate"
+                    "updatedAt": datetime.utcnow()
                 },
                 "$setOnInsert": {
                     "firebaseUid": user["uid"],
                     "status": "active",
-                    "createdAt": "ISODate"
+                    "createdAt": datetime.utcnow()
                 }
             },
             upsert=True
