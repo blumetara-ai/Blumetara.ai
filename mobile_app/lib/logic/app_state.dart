@@ -136,7 +136,7 @@ class AppState extends ChangeNotifier {
       networkClient.updateToken(token);
       
       // Setup a default profile
-      _profile = UserProfile(
+      _profile = Profile(
         name: email.split('@')[0],
         ageRange: "25-34",
         gender: "Female",
