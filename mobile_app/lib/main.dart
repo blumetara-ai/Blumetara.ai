@@ -11,11 +11,29 @@ import 'presentation/screens/reminders_screen.dart';
 import 'presentation/screens/workouts_screen.dart';
 import 'presentation/screens/settings_screen.dart';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  try {
+    if (kIsWeb) {
+      await Firebase.initializeApp(
+        options: const FirebaseOptions(
+          apiKey: "mock-api-key-for-local-run",
+          authDomain: "blumetara-ai.firebaseapp.com",
+          projectId: "blumetara-ai",
+          storageBucket: "blumetara-ai.appspot.com",
+          messagingSenderId: "123456789",
+          appId: "1:123456789:web:abcdef123456",
+        ),
+      );
+    } else {
+      await Firebase.initializeApp();
+    }
+  } catch (e) {
+    debugPrint("Firebase initialization skipped or failed: $e");
+  }
   runApp(
     ChangeNotifierProvider(
       create: (_) => AppState(),
